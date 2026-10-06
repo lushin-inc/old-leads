@@ -119,8 +119,6 @@ state.customers.forEach((a, i) => {
     return f;
   };
   row1.appendChild(text("Customer name", "customer"));
-  row1.appendChild(text("Primary contact", "contact"));
-  row1.appendChild(text("Job title", "title"));
   body.appendChild(row1);
 
   BOXES.forEach(([key, labelText]) => {
@@ -246,22 +244,6 @@ function cell(text, w, o) {
     + '<w:vAlign w:val="center"/></w:tcPr>'
     + para(run(text, { size: o.size || 18, color: o.color || "1F1F1F", bold: !!o.bold })) + "</w:tc>";
 }
-function infoTable(a) {
-  const W = [5184, 5184];
-  const heads = ["Primary contact", "Job title"];
-  const hdr = heads.map((h, i) =>
-    cell(h, W[i], { head: true, fill: STABLE, color: "FFFFFF", bold: true, size: 15 }));
-  const vals = [
-    cell(a.contact || "—", W[0]),
-    cell(a.title || "—", W[1])
-  ];
-  const rows = [hdr, vals].map(cs =>
-    '<w:tr><w:trPr><w:trHeight w:val="300" w:hRule="atLeast"/></w:trPr>' + cs.join("") + "</w:tr>");
-  return '<w:tbl><w:tblPr><w:tblW w:w="10368" w:type="dxa"/><w:tblLayout w:type="fixed"/></w:tblPr>'
-    + "<w:tblGrid>" + W.map(w => '<w:gridCol w:w="' + w + '"/>').join("") + "</w:tblGrid>"
-    + rows.join("") + "</w:tbl>";
-}
-
 function pageBreak() {
   return '<w:p><w:pPr><w:spacing w:after="0"/></w:pPr>'
     + '<w:r><w:br w:type="page"/></w:r></w:p>';
@@ -316,7 +298,6 @@ function buildDocumentXml() {
     body.push(para([run((i + 1) + "   ", { size: 22, color: FRESH, bold: true }),
                     run(a.customer || "Customer " + (i + 1), { size: 22, color: STABLE, bold: true })],
                    { after: 110, keepNext: true }));
-    body.push(infoTable(a));
     BOXES.forEach(([key, labelText]) => {
       body.push(label(labelText));
       body.push(answer(a[key]));
